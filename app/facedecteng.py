@@ -3,7 +3,7 @@ import time
 
 r = redis.Redis(host='localhost', port=6379, db=0)
 ps = r.pubsub()
-ps.subscribe('test')
+ps.subscribe('images')
 #new_msg = ps.get_message()['data']
 #print (new_msg)
 while True:
