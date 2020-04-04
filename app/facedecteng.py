@@ -36,6 +36,7 @@ while True:
         for (x,y,w,h) in faces:
            counter +=1
            cv2.rectangle(arr,(x,y),(x+w,y+h),(255,0,0),2)
+           boxes += [int(x), int(y), int(x+w), int(y+h)]
            # font=cv2.FONT_HERSHEY_SIMPLEX
            #cv2.putText(img,'Jeevy',(x+w/2,y+h/2),font,0.5,(0,0,255),1,cv2.LINE_AA)
            #print(x,y)
@@ -45,6 +46,13 @@ while True:
            # smiles=smile_cascade.detectMultiScale(roi_gray)
            for(ex,ey,ew,eh) in eyes:
                cv2.rectangle(roi_color,(ex, ey),(ex+ew, ey+eh),(0,255,0),2)
+
+        if boxes:
+            msg = {
+                'boxes': str(boxes),
+                'ref_id':img_id
+            }
+            _id = r.xadd('camera:0:facedect',msg)
 
         name = 'outputtest'+str(count)+'.jpg'
         cv2.imwrite(name,arr)
