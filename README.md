@@ -1,2 +1,2 @@
 # RedisFaceDetection
-How to use redis to rum remotely a haar face detector
+How to use redis to run remotely a haar face detector
