@@ -28,28 +28,36 @@ while True:
 
     facesboxes = []
     eyesboxes  = []
-    counter    = 0
+    facecounter= 0
+    eyecounter = 0
 
     for (x,y,w,h) in faces:
-       counter +=1
+       facecounter +=1
 
        cv2.rectangle(arr,(x,y),(x+w,y+h),(255,0,0),2)
        facesboxes += [int(x), int(y), int(x+w), int(y+h)]
 
-       roi_gray  = gray[y:y+h, x:x+w]
-       roi_color = arr[y:y+h, x:x+w]
+       #roi_gray  = gray[y:y+h, x:x+w]
+       #roi_color = arr[y:y+h, x:x+w]
 
-       eyes=eye_cascade.detectMultiScale(roi_gray)
+       #eyes=eye_cascade.detectMultiScale(roi_gray)
+       eyes=eye_cascade.detectMultiScale(gray)
 
        for(ex,ey,ew,eh) in eyes:
-           eyesboxes += [int(ex), int(ey), int(ex+ew), int(ey+eh)]
-           cv2.rectangle(roi_color,(ex, ey),(ex+ew, ey+eh),(0,255,0),2)
+           eyecounter += 1
+           if eyecounter > 2: # Just sent two eyse
+               eyecounter = 2
+               break
+           eyesboxes   += [int(ex), int(ey), int(ex+ew), int(ey+eh)]
+           #cv2.rectangle(roi_color,(ex, ey),(ex+ew, ey+eh),(0,255,0),2)
 
     if facesboxes:
         msg = {
-            'facesboxes': str(facesboxes),
-            'eyesboxes' : str(eyesboxes),
-            'ref_id':img_id
+            'facesboxes' : str(facesboxes),
+            'facecounter': int(facecounter),
+            'eyesboxes'  : str(eyesboxes),
+            'eyecounter' : int(eyecounter),
+            'ref_id'     : img_id
         }
         _id = r.xadd('camera:0:facedect',msg)
 
