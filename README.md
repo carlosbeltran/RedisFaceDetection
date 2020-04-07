@@ -19,16 +19,25 @@ The Redis database can be run opening a terminal and using the provide docker-co
 ```bash
 $ docker-compose up
 ```
-In other terminals you can run the detection script:
+To run the python scripts you'll need Python v3.6 or higher. Install the application's library dependencies with the following - it is recommended that you use `virtualenv` or similar:
+
+```sh
+$ virtualenv -p python3.6 venv
+$ source venv/bin/activate
+$ pip install -r app/requirements.txt
+```
+
+Within the virtual environment you can run the detection script:
 
 ```bash
 $ python3 facedecteng.py
 ```
-and the capture script:
+and in another terminalthe capture script:
 
 ```bash
 $ python3 capture.py
 ```
+This second script should save a processed image.
 
 ## How to use (distributed)
 
