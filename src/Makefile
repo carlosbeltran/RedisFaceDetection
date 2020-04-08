@@ -1,4 +1,4 @@
-DRAPI = `pkg-config --cflags --libs glib-2.0 --libs hiredis`
+DRAPI = `pkg-config --cflags --libs glib-2.0 --libs hiredis --libs opencv`
 
 all:capture.cpp
 	g++ -o capture $< -lhiredis -fpermissive $(DRAPI)

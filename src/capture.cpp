@@ -1,25 +1,40 @@
-#include <stdio.h>
-#include "hiredis.h"
+#include <iostream>
+#include <opencv2/opencv.hpp>
+#include <cstdio>
+#include <hiredis.h>
 
-int main ()
+using namespace std;
+
+int
+main(int argc,char*argv[])
 {
-	redisReply *reply;
-	int port = 6379;
+   //const int width = 640;
+   //const int height= 480;
+   //cv::Mat img(width,height, CV_8UC3, cvScalar(0,255,255));
 
-	redisContext *c = redisConnect("localhost", port);
-	if (c != NULL && c->err) {
-		printf("Error: %s\n", c->errstr);
-		// handle error
-	} else {
-		printf("Connected to Redis\n");
-	}
+   // Redis setup
+   redisContext *c;
+   redisReply *reply;
+   const char *hostname = "localhost";
+   int port = 6379;
 
-	reply = redisCommand(c,"SET %s %s","foo","bar");
-	freeReplyObject(reply);
+   struct timeval timeout = { 2, 0 }; // 2 seconds
+   c = redisConnectWithTimeout(hostname, port, timeout);
+   if (c == NULL || c->err) {
+       std::cerr << "Something bad happened" << std::endl;
+       exit(1);
+   }
 
-	reply = redisCommand(c,"GET %s","foo");
-	printf("%s\n",reply->str);
-	freeReplyObject(reply);
+   cv::Mat img;
+   img = cv::imread("../girl_small.jpg", CV_LOAD_IMAGE_COLOR);   // Read the file
 
-	redisFree(c);
+   if(! img.data )                              // Check for invalid input
+   {
+       cout << "Could not open or find the image" << std::endl ;
+       return -1;
+   }
+
+   // Store Mat in Redis
+   reply = (redisReply*)redisCommand(c,"SET image %b",(char*)img.data,img.size().height*img.size().width*3);
+   freeReplyObject(reply);
 }
