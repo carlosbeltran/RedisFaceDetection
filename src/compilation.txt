@@ -1,1 +1,0 @@
-gcc -o capture capture.c -lhiredis $(pkg-config --cflags --libs glib-2.0 --libs hiredis)
