@@ -45,4 +45,18 @@ main(int argc,char*argv[])
            //img.size().height*img.size().width*3
            );
    freeReplyObject(reply);
+
+   reply = (redisReply*) redisCommand(c,
+           "XREAD COUNT 1 BLOCK 0 STREAMS camera:0:facedect $");
+   if (reply->type == REDIS_REPLY_ARRAY) {
+        printf("%s\n", reply->element[0]->element[0]->str);
+        printf("%s\n", reply->element[0]->element[1]->element[0]->element[0]->str);
+        int elements =  reply->element[0]->element[1]->element[0]->element[1]->elements;
+        for (int j = 0; j < elements; j++) {
+            printf("%u) %s\n", j, reply->element[0]->element[1]->element[0]->element[1]->element[j]->str);
+            //printf("%u) %s\n", j, reply->element[j]->str);
+        }
+    }
+   freeReplyObject(reply);
+   
 }
