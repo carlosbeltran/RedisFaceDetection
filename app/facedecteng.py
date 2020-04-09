@@ -17,12 +17,23 @@ while True:
     try:
         img_id = simg[0][1][0][0]
         print(img_id)
-        data = io.BytesIO(simg[0][1][0][1][b'image'])
+        data    = io.BytesIO(simg[0][1][0][1][b'image'])
+        dataraw = simg[0][1][0][1][b'image']
     except:
         pass
-    img   = Image.open(data)
-    arr   = np.array(img)
-    arr   = cv2.cvtColor(arr, cv2.COLOR_BGR2RGB)
+    ## from Python client
+    #img   = Image.open(data)
+    #arr   = np.array(img)
+    #arr   = cv2.cvtColor(arr, cv2.COLOR_BGR2RGB)
+    #######
+
+    ## from C++ client
+    arr = np.frombuffer(dataraw, dtype=np.uint8).reshape(350,233,3)
+    arr = cv2.cvtColor(arr, cv2.COLOR_BGR2RGB)
+    name = 'fromopencv.jpg'
+    cv2.imwrite(name,arr)
+    #######
+
     gray  = cv2.cvtColor(arr, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray)
 
