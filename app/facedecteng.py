@@ -22,16 +22,17 @@ while True:
     except:
         pass
     ## from Python client
-    #img   = Image.open(data)
-    #arr   = np.array(img)
-    #arr   = cv2.cvtColor(arr, cv2.COLOR_BGR2RGB)
+    img   = Image.open(data)
+    arr   = np.array(img)
+    arr   = cv2.cvtColor(arr, cv2.COLOR_BGR2RGB)
+    name = 'fromopencv_jpg.jpg'
+    cv2.imwrite(name,arr)
     #######
 
     ## from C++ client
-    arr = np.frombuffer(dataraw, dtype=np.uint8).reshape(350,233,3)
-    arr = cv2.cvtColor(arr, cv2.COLOR_BGR2RGB)
-    name = 'fromopencv.jpg'
-    cv2.imwrite(name,arr)
+    #arr = np.frombuffer(dataraw, dtype=np.uint8).reshape(350,233,3)
+    #name = 'fromopencv.jpg'
+    #cv2.imwrite(name,arr)
     #######
 
     gray  = cv2.cvtColor(arr, cv2.COLOR_BGR2GRAY)

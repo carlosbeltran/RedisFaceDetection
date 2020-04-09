@@ -34,12 +34,15 @@ main(int argc,char*argv[])
        return -1;
    }
 
+   vector<uchar> imgjpg;
+   cv::imencode(".jpg",img,imgjpg);
+
    // Store Mat in Redis
-   //reply = (redisReply*)redisCommand(c,"SET image %b",(char*)img.data,img.size().height*img.size().width*3);
    reply = (redisReply*) redisCommand(c,
            "XADD camera:0 MAXLEN ~ 10000 * image %b", 
-           (char*)img.data,
-           img.size().height*img.size().width*3
+           reinterpret_cast<char*>(imgjpg.data()),
+           imgjpg.size()
+           //img.size().height*img.size().width*3
            );
    freeReplyObject(reply);
 }
