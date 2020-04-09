@@ -35,6 +35,11 @@ main(int argc,char*argv[])
    }
 
    // Store Mat in Redis
-   reply = (redisReply*)redisCommand(c,"SET image %b",(char*)img.data,img.size().height*img.size().width*3);
+   //reply = (redisReply*)redisCommand(c,"SET image %b",(char*)img.data,img.size().height*img.size().width*3);
+   reply = (redisReply*) redisCommand(c,
+           "XADD camera:0 MAXLEN ~ 10000 * image %b", 
+           (char*)img.data,
+           img.size().height*img.size().width*3
+           );
    freeReplyObject(reply);
 }
