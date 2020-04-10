@@ -21,7 +21,7 @@ main(int argc,char*argv[])
    struct timeval timeout = { 2, 0 }; // 2 seconds
    c = redisConnectWithTimeout(hostname, port, timeout);
    if (c == NULL || c->err) {
-       std::cerr << "Something bad happened" << std::endl;
+       std::cerr << "Couldn't connect with the Redis server" << std::endl;
        exit(1);
    }
 
@@ -30,14 +30,14 @@ main(int argc,char*argv[])
 
    if(! img.data )                              // Check for invalid input
    {
-       cout << "Could not open or find the image" << std::endl ;
+       cout << "Couldn't open the image" << std::endl ;
        return -1;
    }
 
    vector<uchar> imgjpg;
    cv::imencode(".jpg",img,imgjpg);
 
-   // Store Mat in Redis
+   // Store jpg in Redis
    reply = (redisReply*) redisCommand(c,
            "XADD camera:0 MAXLEN ~ 10000 * image %b", 
            reinterpret_cast<char*>(imgjpg.data()),
@@ -46,6 +46,7 @@ main(int argc,char*argv[])
            );
    freeReplyObject(reply);
 
+   // Wait for the boxes from the facedetection algorithm
    reply = (redisReply*) redisCommand(c,
            "XREAD COUNT 1 BLOCK 0 STREAMS camera:0:facedect $");
    if (reply->type == REDIS_REPLY_ARRAY) {
@@ -56,6 +57,17 @@ main(int argc,char*argv[])
             printf("%u) %s\n", j, reply->element[0]->element[1]->element[0]->element[1]->element[j]->str);
             //printf("%u) %s\n", j, reply->element[j]->str);
         }
+
+        //Facesboxes
+        string facesboxes(reply->element[0]->element[1]->element[0]->element[1]->element[1]->str);
+        //Facesboxes counter
+        reply->element[0]->element[1]->element[0]->element[1]->element[3]->str
+        //eyesboxes
+        reply->element[0]->element[1]->element[0]->element[1]->element[5]->str
+        //Facesboxes counter
+        reply->element[0]->element[1]->element[0]->element[1]->element[7]->str
+        //ref_id
+        reply->element[0]->element[1]->element[0]->element[1]->element[9]->str
     }
    freeReplyObject(reply);
    
