@@ -1,9 +1,11 @@
 /* Extract all integers from string */
 #include <iostream> 
+#include <opencv2/opencv.hpp>
 #include <sstream> 
 #include <vector>
 
 using namespace std; 
+using namespace cv;
 
 template<class T>
 void printVector(vector<vector<T>> const &mat) {
@@ -15,6 +17,16 @@ void printVector(vector<vector<T>> const &mat) {
 	}
 }
 
+void drawBoxes(Mat &img,vector<vector<int>> const &mat) {
+	for (vector<int> row: mat) {
+  		rectangle( img,
+  		       Point( row[0],row[1]),
+  		       Point( row[2],row[3]),
+  		       Scalar( 0, 255, 255 ),
+  		       LINE_4,
+  		       LINE_8 );
+	}
+}
 void extractBoxes(string str, int num_boxes, vector<vector<int>> &boxes) 
 { 
 	stringstream ss;	 
@@ -59,10 +71,21 @@ void extractBoxes(string str, int num_boxes, vector<vector<int>> &boxes)
 int main() 
 { 
 	int numberOfBoxes = 3;
-	string str = "[ 88, 30, 100, 400, 33, 40, 8, 34, 11, 23, 30, 40 ]"; 
+    Mat img;
+    img = imread("../girl_small.jpg", CV_LOAD_IMAGE_COLOR);   // Read the file
+
+    if(! img.data )                              // Check for invalid input
+    {
+        cout << "Couldn't open the image" << std::endl ;
+        return -1;
+    }
+
+	string str = "[ 88, 30, 100, 400, 33, 40, 500, 300, 11, 23, 300, 400]"; 
 	vector<vector<int>> fboxes;
 	extractBoxes(str,numberOfBoxes,fboxes); 
 	printVector(fboxes);
+	drawBoxes(img,fboxes);
+    imwrite("./output_cplusplus.jpg", img);   // Read the file
 	return 0; 
 } 
 
