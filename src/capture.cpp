@@ -5,13 +5,78 @@
 
 using namespace std;
 
+template<class T>
+void printVector(vector<vector<T>> const &mat) {
+	for (vector<T> row: mat) {
+		for (T val: row) {
+			cout << val << " ";
+		}
+		cout << '\n';
+	}
+}
+
+void drawBoxes(cv::Mat &img,vector<vector<int>> const &mat,cv::Scalar color) {
+	for (vector<int> row: mat) {
+		cv::rectangle( img,
+  		       cv::Point( row[0],row[1]),
+  		       cv::Point( row[2],row[3]),
+  		       color,
+  		       cv::LINE_4,
+  		       cv::LINE_8 );
+	}
+}
+
+int extractInt(string str)
+{
+	stringstream ss;	 
+	ss << str;
+	int i;
+	ss >> i;
+	return i;
+}
+	
+void extractBoxes(string str, int num_boxes, vector<vector<int>> &boxes) 
+{ 
+	stringstream ss;	 
+
+	/* Storing the whole string into string stream */
+	ss << str.substr(1); 
+	//vector<vector<int>> fboxes;
+	int nboxes = num_boxes;
+
+	/* Running loop till the end of the stream */
+	string temp; 
+	int found; 
+	int j = 0;
+	vector<int> v;
+
+	for (int i=0; i<nboxes;){
+		/* extracting word by word from stream */
+
+		ss >> temp; 
+
+		/* Checking the given word is integer or not */
+		if (stringstream(temp) >> found){ 
+			//cout << found << " "; 
+			v.push_back(found);
+			j++;
+			if (j == 4){
+				j=0; i++;
+				boxes.push_back(v);
+				v.clear();
+				//cout <<  " | "; 
+			}
+		}
+
+		/* To save from space at the end of string */
+		temp = ""; 
+	}
+	cout << endl; 
+	//printVector(boxes);
+} 
 int
 main(int argc,char*argv[])
 {
-   //const int width = 640;
-   //const int height= 480;
-   //cv::Mat img(width,height, CV_8UC3, cvScalar(0,255,255));
-
    // Redis setup
    redisContext *c;
    redisReply *reply;
@@ -50,6 +115,7 @@ main(int argc,char*argv[])
    reply = (redisReply*) redisCommand(c,
            "XREAD COUNT 1 BLOCK 0 STREAMS camera:0:facedect $");
    if (reply->type == REDIS_REPLY_ARRAY) {
+
         printf("%s\n", reply->element[0]->element[0]->str);
         printf("%s\n", reply->element[0]->element[1]->element[0]->element[0]->str);
         int elements =  reply->element[0]->element[1]->element[0]->element[1]->elements;
@@ -59,16 +125,24 @@ main(int argc,char*argv[])
         }
 
         ////Facesboxes
-        //string facesboxes(reply->element[0]->element[1]->element[0]->element[1]->element[1]->str);
-        ////Facesboxes counter
-        //reply->element[0]->element[1]->element[0]->element[1]->element[3]->str
-        ////eyesboxes
-        //reply->element[0]->element[1]->element[0]->element[1]->element[5]->str
-        ////Facesboxes counter
-        //reply->element[0]->element[1]->element[0]->element[1]->element[7]->str
-        ////ref_id
-        //reply->element[0]->element[1]->element[0]->element[1]->element[9]->str
+        string faces(reply->element[0]->element[1]->element[0]->element[1]->element[1]->str);
+        int numberOfBoxes = extractInt(reply->element[0]->element[1]->element[0]->element[1]->element[3]->str);
+        cout<< " numberofboxes: " << numberOfBoxes;
+		vector<vector<int>> fboxes;
+		extractBoxes(faces,numberOfBoxes,fboxes); 
+		printVector(fboxes);
+		drawBoxes(img,fboxes,cv::Scalar( 255,0,0 ));
+
+        ////Facesboxes
+        string eyes(reply->element[0]->element[1]->element[0]->element[1]->element[5]->str);
+        numberOfBoxes = extractInt(reply->element[0]->element[1]->element[0]->element[1]->element[7]->str);
+        cout<< " numberofboxes: " << numberOfBoxes;
+		vector<vector<int>> eboxes;
+		extractBoxes(eyes,numberOfBoxes,eboxes); 
+		printVector(eboxes);
+		drawBoxes(img,eboxes,cv::Scalar( 0,255,0 ));
     }
    freeReplyObject(reply);
+   imwrite("./output_cplusplus.jpg", img);   // Read the file
    
 }
