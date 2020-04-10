@@ -39,6 +39,26 @@ $ python3 capture.py
 ```
 This second script should save a processed image.
 
+### C++ Client
+
+You can use now also the C++ client in src.
+
+```bash
+$ cd src
+$ make
+$ ./capture
+```
+The C++ client uses the hiredis library.
+The dependecies of the client are:
+
+```bash
+$ sudo apt-get install -y libhiredis-dev
+$ sudo apt install pkg-config
+$ sudo apt install pkgconf
+$ sudo apt-get install libgtk-3-dev
+$ sudo apt install libopencv-dev
+```
+
 ## How to use (distributed)
 
 The same as in local but taking care of setting the correct paths for the Redis database.
