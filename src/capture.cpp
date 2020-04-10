@@ -58,16 +58,16 @@ main(int argc,char*argv[])
             //printf("%u) %s\n", j, reply->element[j]->str);
         }
 
-        //Facesboxes
-        string facesboxes(reply->element[0]->element[1]->element[0]->element[1]->element[1]->str);
-        //Facesboxes counter
-        reply->element[0]->element[1]->element[0]->element[1]->element[3]->str
-        //eyesboxes
-        reply->element[0]->element[1]->element[0]->element[1]->element[5]->str
-        //Facesboxes counter
-        reply->element[0]->element[1]->element[0]->element[1]->element[7]->str
-        //ref_id
-        reply->element[0]->element[1]->element[0]->element[1]->element[9]->str
+        ////Facesboxes
+        //string facesboxes(reply->element[0]->element[1]->element[0]->element[1]->element[1]->str);
+        ////Facesboxes counter
+        //reply->element[0]->element[1]->element[0]->element[1]->element[3]->str
+        ////eyesboxes
+        //reply->element[0]->element[1]->element[0]->element[1]->element[5]->str
+        ////Facesboxes counter
+        //reply->element[0]->element[1]->element[0]->element[1]->element[7]->str
+        ////ref_id
+        //reply->element[0]->element[1]->element[0]->element[1]->element[9]->str
     }
    freeReplyObject(reply);
    

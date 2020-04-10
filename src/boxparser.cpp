@@ -2,6 +2,7 @@
 #include <iostream> 
 #include <sstream> 
 #include <vector>
+
 using namespace std; 
 
 template<class T>
@@ -14,15 +15,14 @@ void printVector(vector<vector<T>> const &mat) {
 	}
 }
 
-//void extractIntegerWords(string str) 
-void extractIntegerWords(string str, vector<vector<int>> &boxes) 
+void extractBoxes(string str, int num_boxes, vector<vector<int>> &boxes) 
 { 
 	stringstream ss;	 
 
 	/* Storing the whole string into string stream */
 	ss << str; 
 	//vector<vector<int>> fboxes;
-	int nboxes = 3;
+	int nboxes = num_boxes;
 
 	/* Running loop till the end of the stream */
 	string temp; 
@@ -58,9 +58,10 @@ void extractIntegerWords(string str, vector<vector<int>> &boxes)
 // Driver code 
 int main() 
 { 
+	int numberOfBoxes = 3;
 	string str = "[ 88, 30, 100, 400, 33, 40, 8, 34, 11, 23, 30, 40 ]"; 
 	vector<vector<int>> fboxes;
-	extractIntegerWords(str,fboxes); 
+	extractBoxes(str,numberOfBoxes,fboxes); 
 	printVector(fboxes);
 	return 0; 
 } 
