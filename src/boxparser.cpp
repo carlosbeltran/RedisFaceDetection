@@ -17,12 +17,12 @@ void printVector(vector<vector<T>> const &mat) {
 	}
 }
 
-void drawBoxes(Mat &img,vector<vector<int>> const &mat) {
+void drawBoxes(Mat &img,vector<vector<int>> const &mat,Scalar color) {
 	for (vector<int> row: mat) {
   		rectangle( img,
   		       Point( row[0],row[1]),
   		       Point( row[2],row[3]),
-  		       Scalar( 0, 255, 255 ),
+  		       color,
   		       LINE_4,
   		       LINE_8 );
 	}
@@ -32,7 +32,7 @@ void extractBoxes(string str, int num_boxes, vector<vector<int>> &boxes)
 	stringstream ss;	 
 
 	/* Storing the whole string into string stream */
-	ss << str; 
+	ss << str.substr(1); 
 	//vector<vector<int>> fboxes;
 	int nboxes = num_boxes;
 
@@ -70,7 +70,6 @@ void extractBoxes(string str, int num_boxes, vector<vector<int>> &boxes)
 // Driver code 
 int main() 
 { 
-	int numberOfBoxes = 3;
     Mat img;
     img = imread("../girl_small.jpg", CV_LOAD_IMAGE_COLOR);   // Read the file
 
@@ -79,12 +78,31 @@ int main()
         cout << "Couldn't open the image" << std::endl ;
         return -1;
     }
+	string faces = "[8, 16, 212, 220]";
+	string eyes  = "[39, 60, 90, 111, 118, 64, 174, 120]";
+	string str   = "[ 88, 30, 100, 400, 33, 40, 500, 300, 11, 23, 300, 400]"; 
 
-	string str = "[ 88, 30, 100, 400, 33, 40, 500, 300, 11, 23, 300, 400]"; 
+	// Draw example
+	//vector<vector<int>> xboxes;
+	//int numberOfBoxes = 3;
+	//extractBoxes(str,numberOfBoxes,xboxes); 
+	//printVector(xboxes);
+	//drawBoxes(img,xboxes);
+	
+	///// Draw faces
 	vector<vector<int>> fboxes;
-	extractBoxes(str,numberOfBoxes,fboxes); 
+	int numberOfBoxes = 1;
+	extractBoxes(faces,numberOfBoxes,fboxes); 
 	printVector(fboxes);
-	drawBoxes(img,fboxes);
+	drawBoxes(img,fboxes,Scalar( 255,0,0 ));
+
+	// Draw faces
+	vector<vector<int>> eboxes;
+	numberOfBoxes = 2;
+	extractBoxes(eyes,numberOfBoxes,eboxes); 
+	printVector(eboxes);
+	drawBoxes(img,eboxes,Scalar( 0,255,0 ));
+
     imwrite("./output_cplusplus.jpg", img);   // Read the file
 	return 0; 
 } 
